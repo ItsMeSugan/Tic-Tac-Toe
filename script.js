@@ -21,8 +21,10 @@ const WINNING_COMBINATIONS = [
 
 startGame();
 
+// // Restart the game by event listener and calling the startGame function // //
 restartButton.addEventListener("click", startGame);
 
+// // starting the game by looping and removing classes // //
 function startGame() {
   circleTurn = false;
   cellElements.forEach((cell) => {
@@ -35,6 +37,18 @@ function startGame() {
   winningMessageElement.classList.remove("show");
 }
 
+// // Hovering X and O before clicking // //
+function setBoardHoverClass() {
+  board.classList.remove(X_CLASS);
+  board.classList.remove(CIRCLE_CLASS);
+  if (circleTurn) {
+    board.classList.add(CIRCLE_CLASS);
+  } else {
+    board.classList.add(X_CLASS);
+  }
+}
+
+// // Target the click and find whether Win or Draw // //
 function handleclick(e) {
   const cell = e.target;
   const currentClass = circleTurn ? CIRCLE_CLASS : X_CLASS;
@@ -54,15 +68,26 @@ function handleclick(e) {
   }
 }
 
-function endGame(draw) {
-  if (draw) {
-    winningMessageTextElement.innerText = "Draw!";
-  } else {
-    winningMessageTextElement.innerText = `${circleTurn ? "O's" : "X's"} Wins!`;
-  }
-  winningMessageElement.classList.add("show");
+// Placing the Marking //
+function placeMark(cell, currentClass) {
+  cell.classList.add(currentClass);
 }
 
+// Swapping turn //
+function swapTurn() {
+  circleTurn = !circleTurn;
+}
+
+// // Checking the winning combination // //
+function checkWin(currentClass) {
+  return WINNING_COMBINATIONS.some((combination) => {
+    return combination.every((index) => {
+      return cellElements[index].classList.contains(currentClass);
+    });
+  });
+}
+
+// // Checking for draw using every method // //
 function isDraw() {
   return [...cellElements].every((cell) => {
     return (
@@ -71,28 +96,12 @@ function isDraw() {
   });
 }
 
-function placeMark(cell, currentClass) {
-  cell.classList.add(currentClass);
-}
-
-function swapTurn() {
-  circleTurn = !circleTurn;
-}
-
-function setBoardHoverClass() {
-  board.classList.remove(X_CLASS);
-  board.classList.remove(CIRCLE_CLASS);
-  if (circleTurn) {
-    board.classList.add(CIRCLE_CLASS);
+// // Ending the game with message and using show class // //
+function endGame(draw) {
+  if (draw) {
+    winningMessageTextElement.innerText = "Draw!";
   } else {
-    board.classList.add(X_CLASS);
+    winningMessageTextElement.innerText = `${circleTurn ? "O's" : "X's"} Wins!`;
   }
-}
-
-function checkWin(currentClass) {
-  return WINNING_COMBINATIONS.some((combination) => {
-    return combination.every((index) => {
-      return cellElements[index].classList.contains(currentClass);
-    });
-  });
+  winningMessageElement.classList.add("show");
 }
